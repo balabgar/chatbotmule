@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>UCM Chatbot</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 0;
+    }
+
+    .header {
+      background-color: #a41e34;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 32px;
+    }
+
+    #chatbox {
+      width: 90%;
+      max-width: 600px;
+      background: white;
+      margin: 40px auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #messages {
+      border: 1px solid #ccc;
+      padding: 15px;
+      height: 350px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 10px 15px;
+      border-radius: 10px;
+      line-height: 1.4;
+    }
+
+    .user {
+      background-color: #e3e3e3;
+      align-self: flex-end;
+    }
+
+    .bot {
+      background-color: #f7d9dd;
+      align-self: flex-start;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #a41e34;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #891b2e;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>University of Central Missouri Chatbot</h1>
+    <p>Ask me anything about UCM!</p>
+  </div>
+
+  <div id="chatbox">
+    <div id="messages"></div>
+    <input type="text" id="userInput" placeholder="Type your question here..." onkeydown="handleKey(event)" />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <script>
+    function handleKey(e) {
+      if (e.key === "Enter") {
+        sendMessage();
+      }
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('userInput');
+      const message = input.value.trim();
+      if (!message) return;
+
+      const messagesDiv = document.getElementById('messages');
+      messagesDiv.innerHTML += `<div class="message user"><strong>You:</strong> ${message}</div>`;
+      input.value = '';
+
+      fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message })
+      })
+      .then(res => res.text())
+      .then(reply => {
+        messagesDiv.innerHTML += `<div class="message bot"><strong>Bot:</strong> ${reply}</div>`;
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      });
+    }
+  </script>
+</body>
+</html>
