@@ -1,29 +1,31 @@
 package com.chatbot.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Service
 public class ChatService {
 
-    @Autowired
-    private DynamoDbClient dynamoDbClient;
+    private final DynamoDbClient dynamoDbClient;
 
     private final String TABLE_NAME = "Chatbotqa";
     private final String PARTITION_KEY = "keyword";
     private final String VALUE_KEY = "answer";
+
+    public ChatService() {
+        this.dynamoDbClient = DynamoDbClient.builder()
+                .region(Region.US_EAST_2) // <-- Set your DynamoDB region here
+                .build();
+    }
 
     public String getResponse(String keywordInput) {
         String keyword = keywordInput.toLowerCase().trim();
         System.out.println("🔍 Querying keyword: " + keyword);
 
         try {
-            // Build the query request with only partition key (keyword)
             Map<String, AttributeValue> expressionValues = new HashMap<>();
             expressionValues.put(":keywordVal", AttributeValue.builder().s(keyword).build());
 

@@ -5,45 +5,28 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- Parent POM for Spring Boot -->
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.4</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
-
-    <!-- Your project information -->
     <groupId>com.chatbot</groupId>
     <artifactId>chatbot</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>chatbot</name>
-    <description>Chatbot cloud project</description>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
     <properties>
-        <java.version>17</java.version> <!-- Make sure you're using Java 17 or higher -->
+        <java.version>11</java.version>
     </properties>
 
     <dependencies>
-        <!-- Spring Boot Web Dependency -->
+        <!-- AWS Lambda Java Core -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-lambda-java-core</artifactId>
+            <version>1.2.2</version>
         </dependency>
 
-        <!-- Spring Boot DevTools for Development -->
+        <!-- AWS Lambda Java Events -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
-        </dependency>
-
-        <!-- Lombok for reducing boilerplate code -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-lambda-java-events</artifactId>
+            <version>3.11.0</version>
         </dependency>
 
         <!-- AWS SDK for DynamoDB -->
@@ -53,19 +36,18 @@
             <version>2.25.17</version>
         </dependency>
 
-        <!-- AWS SDK Core Dependency -->
+        <!-- AWS SDK Core (auth, credentials) -->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>auth</artifactId>
             <version>2.25.17</version>
         </dependency>
-
-        <!-- Spring Boot Test for unit and integration testing -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.15.2</version> 
+</dependency>
+
     </dependencies>
 
     <build>
@@ -80,11 +62,21 @@
                 </configuration>
             </plugin>
 
-            <!-- Spring Boot Maven Plugin -->
+            <!-- Maven Shade Plugin (to create fat jar) -->
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
+
 </project>
